@@ -12,17 +12,27 @@
         port: 3306
         delay: 5
 
-    - name: Define MySQL root password
-      mysql_user:
-        name: "root"
-        password: "{{ mysql_root_password }}"
-      when: mysql_root_password is defined
-
     - name: Creating MySQL DB
       mysql_db:
         name: "{{ mysql_db }}"
         state: "present"
       when: mysql_db is defined
+
+    - name: Applying DB User Permissions
+      mysql_user:
+        name: "{{ mysql_user }}"
+        password: "{{ mysql_pass }}"
+        priv: "{{ mysql_db }}.*:ALL,GRANT"
+      when: >
+            mysql_db is defined and
+            mysql_user is defined and
+            mysql_pass is defined
+
+    - name: Define MySQL root password
+      mysql_user:
+        name: "root"
+        password: "{{ mysql_root_password }}"
+      when: mysql_root_password is defined
 
     - name: Kill MySQL
       shell: "killall mysqld"
