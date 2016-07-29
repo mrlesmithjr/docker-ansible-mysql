@@ -37,4 +37,4 @@ VOLUME /var/lib/mysql
 EXPOSE 3306
 
 # Container start-up
-CMD ["mysqld"]
+CMD ["/usr/bin/dumb-init", "mysqld"]
