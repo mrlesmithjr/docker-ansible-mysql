@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  vars:
+  tasks:
+    - name: Start MySQL
+      shell: "/usr/bin/mysqld_safe > /dev/null 2>&1 &"
+
+    - name: Waiting for MySQL Service
+      wait_for:
+        port: 3306
+        delay: 5
+
+    - name: Define MySQL root password
+      mysql_user:
+        name: "root"
+        password: "{{ mysql_root_password }}"
+      when: mysql_root_password is defined
+
+    - name: Creating MySQL DB
+      mysql_db:
+        name: "{{ mysql_db }}"
+        state: "present"
+      when: mysql_db is defined
+
+    - name: Kill MySQL
+      shell: "killall mysqld"

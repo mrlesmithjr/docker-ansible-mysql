@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  vars:
+  tasks:
+    - name: Installing Pre-Req Packages
+      apt:
+        name: "{{ item }}"
+        state: "present"
+      with_items:
+        - 'curl'
+        - 'mysql-client'
+        - 'python-mysqldb'
+      when: ansible_os_family == "Debian"
+
+    - name: Installing MySQL Server
+      apt:
+        name: "mysql-server"
+        state: "present"
+      register: "mysql_installed"
+      when: ansible_os_family == "Debian"
+
+    - name: Configuring MySQL Listen Address
+      replace:
+        dest: "/etc/mysql/my.cnf"
+        regexp: "^bind-address"
+        replace: "#bind-address"
+      when: mysql_installed.changed
