@@ -23,6 +23,10 @@
         name: "{{ mysql_user }}"
         password: "{{ mysql_pass }}"
         priv: "{{ mysql_db }}.*:ALL,GRANT"
+        host: "{{ item }}"
+      with_items:
+        - 'localhost'
+        - '%'
       when: >
             mysql_db is defined and
             mysql_user is defined and
