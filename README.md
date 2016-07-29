@@ -21,11 +21,11 @@ docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=P@55w0rd -p 3306:3306 mrlesmit
 ```
 `define db to create`
 ```
-docker run -d --name mysql -e MYSQL_DB=pdns -p 3306:3306 mrlesmithjr/mysql
+docker run -d --name mysql -e MYSQL_DATABASE=pdns -p 3306:3306 mrlesmithjr/mysql
 ```
 `define db, user, and password`
 ```
-docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=P@55w0rd -e MYSQL_DB=phpipam -e MYSQL_USER=phpipam -e MYSQL_PASS=phpipam -p 3306:3306 mrlesmithjr/mysql
+docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=P@55w0rd -e MYSQL_DATABASE=phpipam -e MYSQL_USER=phpipam -e MYSQL_PASSWORD=phpipam -p 3306:3306 mrlesmithjr/mysql
 ```
 `define volume for persistent storage`
 ```
