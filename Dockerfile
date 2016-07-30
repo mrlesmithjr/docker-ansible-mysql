@@ -24,6 +24,7 @@ RUN apt-get -y clean && \
 
 # Setup entrypoint Ansible Playbook
 COPY docker-entrypoint.yml /docker-entrypoint.yml
+COPY my.cnf.j2 /my.cnf.j2
 
 # Setup entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/

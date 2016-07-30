@@ -36,3 +36,15 @@
         regexp: "^bind-address"
         replace: "#bind-address"
       when: mysql_installed.changed
+
+    - name: Removing /var/lib/mysql
+      file:
+        path: "/var/lib/mysql"
+        state: "absent"
+
+    - name: Re-Creating /var/lib/mysql
+      file:
+        path: "/var/lib/mysql"
+        state: "directory"
+        owner: "mysql"
+        group: "mysql"

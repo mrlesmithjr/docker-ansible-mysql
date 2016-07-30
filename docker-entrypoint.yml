@@ -4,6 +4,24 @@
   become: true
   vars:
   tasks:
+    - name: Ensuring /var/lib/mysql Exists
+      file:
+        path: "/var/lib/mysql"
+        state: "directory"
+        owner: "mysql"
+        group: "mysql"
+        recurse: yes
+
+    - name: Checking If /var/lib/mysql/mysql Exists
+      stat:
+        path: "/var/lib/mysql/mysql"
+      register: "mysql_check"
+
+# We do this to INIT the DB if a fresh container w/out data..Otherwise MySQL will not start....
+    - name: Initing DB
+      shell: "mysql_install_db --user mysql --ldata=/var/lib/mysql/"
+      when: not mysql_check.stat.exists
+
     - name: Start MySQL
       shell: "/usr/bin/mysqld_safe > /dev/null 2>&1 &"
 
@@ -11,6 +29,21 @@
       wait_for:
         port: 3306
         delay: 5
+
+    - name: Checking If my.cnf Exists For root
+      stat:
+        path: "/var/lib/mysql/.my.cnf"
+      register: "my_cnf"
+
+# We do this in case the container is destroyed but data remains
+    - name: Creating Symlink For my.cnf (If Exists)
+      file:
+        src: "/var/lib/mysql/.my.cnf"
+        dest: "/root/.my.cnf"
+        state: "link"
+        owner: "root"
+        group: "root"
+      when: my_cnf.stat.exists
 
     - name: Creating MySQL DB
       mysql_db:
@@ -37,6 +70,27 @@
         name: "root"
         password: "{{ mysql_root_password }}"
       when: mysql_root_password is defined
+
+# We do this in case the container is destroyed but data remains
+    - name: Configuring my.cnf For root
+      template:
+        src: "./my.cnf.j2"
+        dest: "/var/lib/mysql/.my.cnf"
+        owner: "root"
+        group: "root"
+        mode: 0600
+      register: "my_cnf_set"
+      when: mysql_root_password is defined
+
+# We do this in case the container is destroyed but data remains
+    - name: Creating Symlink For my.cnf
+      file:
+        src: "/var/lib/mysql/.my.cnf"
+        dest: "/root/.my.cnf"
+        state: "link"
+        owner: "root"
+        group: "root"
+      when: my_cnf_set.changed
 
     - name: Kill MySQL
       shell: "killall mysqld"
