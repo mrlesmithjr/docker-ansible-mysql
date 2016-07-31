@@ -1,4 +1,7 @@
 #!/bin/bash
+if [ ! -n "$MYSQL_ROOT_PASSWORD" -a ! -n "$MYSQL_DATABASE" -a ! -n "$MYSQL_USER" -a ! -n "$MYSQL_PASSWORD" ]; then
+  ansible-playbook -i "localhost," -c local /docker-entrypoint.yml
+fi
 if [ -n "$MYSQL_ROOT_PASSWORD" -a ! -n "$MYSQL_DATABASE" -a ! -n "$MYSQL_USER" -a ! -n "$MYSQL_PASSWORD" ]; then
   ansible-playbook -i "localhost," -c local /docker-entrypoint.yml \
   --extra-vars "mysql_root_password=${MYSQL_ROOT_PASSWORD}"
