@@ -29,7 +29,7 @@ docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=P@55w0rd -e MYSQL_DATABASE=php
 ```
 `define volume for persistent storage`
 ```
-docker run -d --name mysql -v ./data:/var/lib/mysql -p 3306:3306 mrlesmithjr/mysql
+docker run -d --name mysql -v $PWD/.data:/var/lib/mysql -p 3306:3306 mrlesmithjr/mysql
 ```
 
 License
