@@ -19,7 +19,8 @@
 
 # We do this to INIT the DB if a fresh container w/out data..Otherwise MySQL will not start....
     - name: Initing DB
-      shell: "mysql_install_db --user mysql --ldata=/var/lib/mysql/"
+      #shell: "mysql_install_db --user mysql --ldata=/var/lib/mysql/" #Was for Ubuntu 14.04
+      shell: "mysqld --initialize --user mysql --basedir=/var/lib/mysql --datadir=/var/lib/mysql/data"
       when: not mysql_check.stat.exists
 
     - name: Start MySQL
