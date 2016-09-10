@@ -1,4 +1,4 @@
-FROM mrlesmithjr/ubuntu-ansible:14.04
+FROM mrlesmithjr/ubuntu-ansible:16.04
 
 MAINTAINER Larry Smith Jr. <mrlesmithjr@gmail.com>
 
