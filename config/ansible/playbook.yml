@@ -3,60 +3,33 @@
   connection: local
   become: true
   vars:
-    gosu_ver: '1.9'
   tasks:
-    - name: Update Apt-Cache
-      apt:
+    - name: Update APK Cache
+      apk:
         update_cache: yes
 
-    - name: Installing apt-transport-https
-      apt:
-        name: "apt-transport-https"
-        state: "present"
-
-    - name: Installing ca-certificates
-      apt:
-        name: "ca-certificates"
-        state: "latest"
-
-    - name: Installing dumb-init
-      apt:
-        deb: "https://github.com/Yelp/dumb-init/releases/download/v1.0.2/dumb-init_1.0.2_amd64.deb"
-
-    - name: Installing gosu
-      get_url:
-        url: "https://github.com/tianon/gosu/releases/download/{{ gosu_ver }}/gosu-amd64"
-        dest: "/usr/local/bin/gosu"
-        mode: 0755
-
     - name: Installing Pre-Reqs
-      apt:
+      apk:
         name: "{{ item }}"
         state: "present"
-        install_recommends: no
       with_items:
-        - 'cron'
         - 'rsyslog'
         - 'supervisor'
 
     - name: Installing Pre-Req Packages
-      apt:
+      apk:
         name: "{{ item }}"
         state: "present"
-        install_recommends: no
       with_items:
         - 'curl'
         - 'mysql-client'
-        - 'python-mysqldb'
-      when: ansible_os_family == "Debian"
+        - 'py-mysqldb'
 
     - name: Installing MySQL Server
-      apt:
-        name: "mysql-server"
+      apk:
+        name: "mysql"
         state: "present"
-        install_recommends: no
       register: "mysql_installed"
-      when: ansible_os_family == "Debian"
 
     - name: Configuring MySQL Listen Address
       replace:
@@ -73,6 +46,13 @@
     - name: Re-Creating /var/lib/mysql
       file:
         path: "/var/lib/mysql"
+        state: "directory"
+        owner: "mysql"
+        group: "mysql"
+
+    - name: Checking If /run/mysqld Exists
+      file:
+        path: "/run/mysqld"
         state: "directory"
         owner: "mysql"
         group: "mysql"

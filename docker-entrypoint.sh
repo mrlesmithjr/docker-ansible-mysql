@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ash
 if [ ! -n "$MYSQL_ROOT_PASSWORD" -a ! -n "$MYSQL_DATABASE" -a ! -n "$MYSQL_USER" -a ! -n "$MYSQL_PASSWORD" ]; then
   ansible-playbook -i "localhost," -c local /docker-entrypoint.yml
 fi
@@ -24,4 +24,4 @@ if [ ! -n "$MYSQL_ROOT_PASSWORD" -a -n "$MYSQL_DATABASE" -a -n "$MYSQL_USER" -a 
 fi
 
 sleep 5
-exec "$@"
+exec supervisord -n
